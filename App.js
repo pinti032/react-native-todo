@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import GoalItem from "./components/GoalItem";
 import GoalInput from "./components/GoalInput";
+import { StatusBar} from "expo-status-bar";
 
 export default function App() {
     const [modalIsVisible, setModalIsVisible] = useState(false);
@@ -16,11 +17,16 @@ export default function App() {
         setModalIsVisible(true);
     }
 
+    function endAddGoalHandler() {
+        setModalIsVisible(false);
+    }
+
     function addGoalHandler (enteredGoalText) {
         setYourGoals((currentGoals) => [
             ...yourGoals,
             { text: enteredGoalText, id: Math.random().toString()}
         ]);
+        endAddGoalHandler();
     }
 
     function deleteGoalHandler(id) {
@@ -30,9 +36,15 @@ export default function App() {
     }
 
     return (
+        <>
+        <StatusBar style='light' />
         <View style={styles.appContainer}>
-            <Button title={"Add Goal"} onPress={startAddGoalHandler}/>
-            <GoalInput visible={modalIsVisible} onAddGoal={addGoalHandler}/>
+            <Button
+                title={"Add Task"}
+                onPress={startAddGoalHandler}
+                color="#a065ec"
+            />
+            <GoalInput visible={modalIsVisible} onAddGoal={addGoalHandler} onCancel={endAddGoalHandler} />
             <View style={styles.goalsContainer}>
                 <FlatList data={yourGoals} renderItem={itemData => {
                     return (
@@ -49,13 +61,14 @@ export default function App() {
                 alwaysBounceVertical={false} />
             </View>
         </View>
+        </>
     );
 }
 
 const styles = StyleSheet.create({
     appContainer: {
         flex: 1,
-        paddingTop: 50,
+        paddingTop: 100,
         paddingHorizontal: 16
     },
     goalsContainer: {
